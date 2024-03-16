@@ -4,7 +4,7 @@ use {
 };
 
 impl Server<Listening> {
-  pub fn connect(self) -> Server<Connected> {
+  #[must_use] pub fn connect(self) -> Server<Connected> {
     println!("waiting for player 1");
     let player_x: TcpStream = self.state.tcp_listener.accept().unwrap().0;
     println!("player 1 connected");

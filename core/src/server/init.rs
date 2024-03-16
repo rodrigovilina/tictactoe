@@ -3,15 +3,21 @@ use {
   std::net::TcpListener,
 };
 
+impl Default for Server<Init> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Server<Init> {
-  pub fn new() -> Self {
+  #[must_use] pub fn new() -> Self {
     Self {
       game: Game::default(),
       state: Init(),
     }
   }
 
-  pub fn listen(self) -> Server<Listening> {
+  #[must_use] pub fn listen(self) -> Server<Listening> {
     let tcp_listener: TcpListener = TcpListener::bind("127.0.0.1:8754").unwrap();
 
     Server::<Listening> {

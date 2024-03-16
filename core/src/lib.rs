@@ -24,7 +24,7 @@ struct Board {
   pub bottom_right: CellValue,
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum CellValue {
   #[default]
   Empty,
@@ -32,14 +32,14 @@ pub enum CellValue {
   O,
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Player {
   #[default]
   X,
   O,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CellPosition {
   TopLeft,
   Top,

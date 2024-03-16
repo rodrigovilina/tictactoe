@@ -1,19 +1,19 @@
 use crate::CellValue;
 
 impl CellValue {
-  pub fn to_byte(&self) -> u8 {
+  #[must_use] pub fn to_byte(&self) -> u8 {
     match self {
-      CellValue::Empty => 0,
-      CellValue::X => 1,
-      CellValue::O => 2,
+      Self::Empty => 0,
+      Self::X => 1,
+      Self::O => 2,
     }
   }
 
-  pub fn from_byte(byte: u8) -> Self {
+  #[must_use] pub fn from_byte(byte: u8) -> Self {
     match byte {
-      0 => CellValue::Empty,
-      1 => CellValue::X,
-      2 => CellValue::O,
+      0 => Self::Empty,
+      1 => Self::X,
+      2 => Self::O,
       _ => unreachable!(),
     }
   }

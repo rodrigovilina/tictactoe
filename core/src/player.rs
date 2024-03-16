@@ -1,31 +1,31 @@
 use crate::{CellValue, Player};
 
 impl Player {
-  pub fn other(player: Player) -> Player {
+  #[must_use] pub fn other(player: Self) -> Self {
     match player {
-      Player::X => Player::O,
-      Player::O => Player::X,
+      Self::X => Self::O,
+      Self::O => Self::X,
     }
   }
 
-  pub fn to_cell_value(&self) -> CellValue {
+  #[must_use] pub fn to_cell_value(&self) -> CellValue {
     match self {
-      Player::X => CellValue::X,
-      Player::O => CellValue::O,
+      Self::X => CellValue::X,
+      Self::O => CellValue::O,
     }
   }
 
-  pub fn to_byte(&self) -> u8 {
+  #[must_use] pub fn to_byte(&self) -> u8 {
     match self {
-      Player::X => 0,
-      Player::O => 1,
+      Self::X => 0,
+      Self::O => 1,
     }
   }
 
-  pub fn from_byte(byte: u8) -> Self {
+  #[must_use] pub fn from_byte(byte: u8) -> Self {
     match byte {
-      0 => Player::X,
-      1 => Player::O,
+      0 => Self::X,
+      1 => Self::O,
       _ => unreachable!(),
     }
   }

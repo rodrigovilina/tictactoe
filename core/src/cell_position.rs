@@ -1,31 +1,31 @@
 use crate::CellPosition;
 
 impl CellPosition {
-  pub fn to_byte(&self) -> u8 {
+  #[must_use] pub fn to_byte(&self) -> u8 {
     match self {
-      CellPosition::TopLeft => 0,
-      CellPosition::Top => 1,
-      CellPosition::TopRight => 2,
-      CellPosition::Left => 3,
-      CellPosition::Center => 4,
-      CellPosition::Right => 5,
-      CellPosition::BottomLeft => 6,
-      CellPosition::Bottom => 7,
-      CellPosition::BottomRight => 8,
+      Self::TopLeft => 0,
+      Self::Top => 1,
+      Self::TopRight => 2,
+      Self::Left => 3,
+      Self::Center => 4,
+      Self::Right => 5,
+      Self::BottomLeft => 6,
+      Self::Bottom => 7,
+      Self::BottomRight => 8,
     }
   }
 
-  pub fn from_byte(byte: u8) -> Self {
+  #[must_use] pub fn from_byte(byte: u8) -> Self {
     match byte {
-      0 => CellPosition::TopLeft,
-      1 => CellPosition::Top,
-      2 => CellPosition::TopRight,
-      3 => CellPosition::Left,
-      4 => CellPosition::Center,
-      5 => CellPosition::Right,
-      6 => CellPosition::BottomLeft,
-      7 => CellPosition::Bottom,
-      8 => CellPosition::BottomRight,
+      0 => Self::TopLeft,
+      1 => Self::Top,
+      2 => Self::TopRight,
+      3 => Self::Left,
+      4 => Self::Center,
+      5 => Self::Right,
+      6 => Self::BottomLeft,
+      7 => Self::Bottom,
+      8 => Self::BottomRight,
       _ => unreachable!(),
     }
   }

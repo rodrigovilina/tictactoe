@@ -12,18 +12,18 @@ impl Server<Connected> {
     self.state.player_x.stream.set_nonblocking(true).unwrap();
     self.state.player_o.stream.set_nonblocking(true).unwrap();
     loop {
-      self.tick()
+      self.tick();
     }
   }
 
   fn tick(&mut self) {
     let incoming_packet: Option<Packet> = self.get_packet();
-    println!("incoming_packet: {:?}", incoming_packet);
+    println!("incoming_packet: {incoming_packet:?}");
 
     if let Some(packet) = incoming_packet {
       let outgoing_packet: Option<Packet> = self.update(packet);
 
-      println!("outgoing_packet: {:?}", outgoing_packet);
+      println!("outgoing_packet: {outgoing_packet:?}");
 
       if let Some(o_packet) = outgoing_packet {
         self.send_packet(o_packet);
@@ -58,14 +58,14 @@ impl Server<Connected> {
       .stream
       .write(&packet.to_bytes())
       .unwrap();
-    println!("Wrote {} bytes to Player::X", bytes);
+    println!("Wrote {bytes} bytes to Player::X");
     let bytes: usize = self
       .state
       .player_o
       .stream
       .write(&packet.to_bytes())
       .unwrap();
-    println!("Wrote {} bytes to Player::O", bytes);
+    println!("Wrote {bytes} bytes to Player::O");
   }
 
   fn get_packet(&mut self) -> Option<Packet> {

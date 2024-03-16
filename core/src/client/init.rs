@@ -3,15 +3,21 @@ use {
   std::net::TcpStream,
 };
 
+impl Default for Client<Init> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Client<Init> {
-  pub fn new() -> Self {
+  #[must_use] pub fn new() -> Self {
     Self {
       game: Game::default(),
       state: Init(),
     }
   }
 
-  pub fn connect(self) -> Client<ClientConnected> {
+  #[must_use] pub fn connect(self) -> Client<ClientConnected> {
     let stream: TcpStream = TcpStream::connect("127.0.0.1:8754").unwrap();
     Client::<ClientConnected> {
       game: self.game,
