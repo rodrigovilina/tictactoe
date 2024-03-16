@@ -1,0 +1,2 @@
+set -veuxo pipefail
+cargo run --bin client
