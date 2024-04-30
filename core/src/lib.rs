@@ -1,3 +1,11 @@
+#![warn(clippy::complexity)]
+#![warn(clippy::expect_used)]
+#![warn(clippy::nursery)]
+#![warn(clippy::panic)]
+#![warn(clippy::pedantic)]
+#![warn(clippy::perf)]
+#![warn(clippy::unwrap_used)]
+
 mod board;
 mod cell_position;
 mod cell_value;
@@ -22,6 +30,45 @@ struct Board {
   pub bottom_left: CellValue,
   pub bottom: CellValue,
   pub bottom_right: CellValue,
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
+struct Game {
+  board: Board,
+  current_turn: Player,
+}
+
+pub struct Client<T: ClientState> {
+  game: Game,
+  state: T,
+}
+
+pub struct Server<T: ServerState> {
+  game: Game,
+  state: T,
+}
+
+pub struct ClientHandler {
+  pub stream: TcpStream,
+}
+
+pub struct ServerHandler {
+  pub stream: TcpStream,
+}
+
+#[derive(Clone, Copy, Debug)]
+enum Packet {
+  AttemptPlay {
+    player: Player,
+    position: CellPosition,
+  },
+  Play {
+    value: CellValue,
+    position: CellPosition,
+  },
+  AssignPlayer {
+    player: Player
+  }
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -52,37 +99,11 @@ pub enum CellPosition {
   BottomRight,
 }
 
-#[derive(Clone, Debug, Default, PartialEq)]
-struct Game {
-  board: Board,
-  current_turn: Player,
+pub trait AttemptPlay {
+  fn attempt_play(&mut self, player: Player, position: CellPosition) -> bool;
 }
 
-pub struct Client<T: ClientState> {
-  game: Game,
-  state: T,
-}
-
-pub struct Server<T: ServerState> {
-  game: Game,
-  state: T,
-}
-
-pub struct ClientHandler {
-  pub stream: TcpStream,
-}
-
-pub struct ServerHandler {
-  pub stream: TcpStream,
-}
-
-mod private {
-  pub trait PrivateServerState {}
-  pub trait PrivateClientState {}
-}
-
-pub trait ServerState: private::PrivateServerState {}
-pub trait ClientState: private::PrivateClientState {}
+// Server and Client States
 
 pub struct Init();
 pub struct Listening {
@@ -94,33 +115,27 @@ pub struct Connected {
 }
 pub struct ClientConnected {
   server: ServerHandler,
+  player: Player,
 }
 
-impl private::PrivateServerState for Init {}
-impl private::PrivateClientState for Init {}
-impl private::PrivateServerState for Listening {}
-impl private::PrivateServerState for Connected {}
-impl private::PrivateClientState for ClientConnected {}
+mod private {
+  pub trait ServerState {}
+  pub trait ClientState {}
+}
+
+pub trait ServerState: private::ServerState {}
+pub trait ClientState: private::ClientState {}
+
+impl private::ServerState for Init {}
+impl private::ClientState for Init {}
+impl private::ServerState for Listening {}
+impl private::ServerState for Connected {}
+impl private::ClientState for ClientConnected {}
+
 impl ServerState for Init {}
 impl ClientState for Init {}
 impl ServerState for Listening {}
 impl ServerState for Connected {}
 impl ClientState for ClientConnected {}
 
-pub trait AttemptPlay {
-  fn attempt_play(&mut self, player: Player, position: CellPosition);
-}
 
-#[derive(Debug)]
-enum Packet {
-  AttemptPlay {
-    player: Player,
-    position: CellPosition,
-  },
-  Play {
-    value: CellValue,
-    position: CellPosition,
-  },
-}
-
-//    //////////////////////////////////////////////////////////////////////////

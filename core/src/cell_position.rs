@@ -1,7 +1,7 @@
 use crate::CellPosition;
 
 impl CellPosition {
-  #[must_use] pub fn to_byte(&self) -> u8 {
+  #[must_use] pub const fn to_byte(&self) -> u8 {
     match self {
       Self::TopLeft => 0,
       Self::Top => 1,
@@ -15,7 +15,7 @@ impl CellPosition {
     }
   }
 
-  #[must_use] pub fn from_byte(byte: u8) -> Self {
+  #[must_use] pub const fn from_byte(byte: u8) -> Self {
     match byte {
       0 => Self::TopLeft,
       1 => Self::Top,

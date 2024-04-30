@@ -1,4 +1,4 @@
-use crate::{Board, CellPosition, CellValue, Player};
+use crate::{Board, CellPosition, CellValue};
 
 impl Board {
   pub fn is_cell_empty(&self, position: CellPosition) -> bool {
@@ -15,17 +15,17 @@ impl Board {
     }
   }
 
-  pub fn play_cell(&mut self, player: Player, position: CellPosition) {
+  pub fn play_cell(&mut self, value: CellValue, position: CellPosition) {
     match position {
-      CellPosition::TopLeft => self.top_left = player.to_cell_value(),
-      CellPosition::Top => self.top = player.to_cell_value(),
-      CellPosition::TopRight => self.top_right = player.to_cell_value(),
-      CellPosition::Left => self.left = player.to_cell_value(),
-      CellPosition::Center => self.center = player.to_cell_value(),
-      CellPosition::Right => self.right = player.to_cell_value(),
-      CellPosition::BottomLeft => self.bottom_left = player.to_cell_value(),
-      CellPosition::Bottom => self.bottom = player.to_cell_value(),
-      CellPosition::BottomRight => self.bottom_right = player.to_cell_value(),
+      CellPosition::TopLeft => self.top_left = value,
+      CellPosition::Top => self.top = value,
+      CellPosition::TopRight => self.top_right = value,
+      CellPosition::Left => self.left = value,
+      CellPosition::Center => self.center = value,
+      CellPosition::Right => self.right = value,
+      CellPosition::BottomLeft => self.bottom_left = value,
+      CellPosition::Bottom => self.bottom = value,
+      CellPosition::BottomRight => self.bottom_right = value,
     }
   }
 }

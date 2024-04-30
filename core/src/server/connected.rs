@@ -18,7 +18,6 @@ impl Server<Connected> {
 
   fn tick(&mut self) {
     let incoming_packet: Option<Packet> = self.get_packet();
-    println!("incoming_packet: {incoming_packet:?}");
 
     if let Some(packet) = incoming_packet {
       let outgoing_packet: Option<Packet> = self.update(packet);
@@ -30,7 +29,7 @@ impl Server<Connected> {
       };
     };
 
-    sleep(Duration::from_millis(100));
+    sleep(Duration::from_millis(1000));
   }
 
   fn update(&mut self, packet: Packet) -> Option<Packet> {
@@ -38,16 +37,21 @@ impl Server<Connected> {
     match packet {
       Packet::AttemptPlay { player, position } => {
         if player == self.game.current_turn {
-          self.game.attempt_play(player, position);
-          Some(Packet::Play {
-            value: player.to_cell_value(),
-            position,
-          })
+          let successful_play: bool = self.game.attempt_play(player, position);
+          println!("{successful_play:?}");
+          if successful_play {
+            Some(Packet::Play {
+              value: player.to_cell_value(),
+              position,
+            })
+          } else {
+            None
+          }
         } else {
           None
         }
       }
-      Packet::Play { .. } => None,
+      Packet::Play { .. } | Packet::AssignPlayer { .. } => None,
     }
   }
 
@@ -69,6 +73,8 @@ impl Server<Connected> {
   }
 
   fn get_packet(&mut self) -> Option<Packet> {
+    println!("Getting Packet from Clients");
+
     let mut stream = match self.game.current_turn {
       Player::X => &self.state.player_x.stream,
       Player::O => &self.state.player_o.stream,
@@ -77,19 +83,21 @@ impl Server<Connected> {
     let mut packet_type: [u8; 1] = [0; 1];
 
     match stream.peek(&mut packet_type) {
-      Ok(1) => {}
-      Ok(0) => return None,
+      Ok(1) => {
+        let pt = packet_type[0];
+        println!("Successfully read packet type: {pt:?}");
+      }
+      Ok(0) | Err(_) => return None,
       Ok(_) => panic!(),
-      Err(_) => return None,
     }
-
-    println!("Peaked {} bytes as packet_type", 1);
 
     match packet_type[0] {
       0 => {
         let mut buf: [u8; 3] = [0; 3];
         stream.read_exact(&mut buf).ok()?;
-        Some(Packet::from_bytes(buf.to_vec()))
+        let opt_packet = Some(Packet::from_bytes(&buf));
+        println!("opt_packet: {opt_packet:?}");
+        opt_packet
       }
       _ => None,
     }
